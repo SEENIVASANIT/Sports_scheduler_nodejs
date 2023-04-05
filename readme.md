@@ -40,5 +40,23 @@ In this page, we are able to see the all sessions for the particular sports that
 
 ![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(110).png)
 
-In this page, It contains all details belongs to its correspoding session. And it shows the organizer of this session at the top right corner. Organizer can able to edit and delete the sessions.
+In this page, It contains all details belongs to its correspoding session. And it shows the organizer of this session at the top right corner. Organizer and admin can able to edit and delete the sessions. Organizers are able to add players unless the player limit was full.
+
+![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(115).png)
+
+This page will be shown when the session was ended.
+
+
+![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(111).png)
+Users can join the session which is created by other users.
+
+
+![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(112).png)
+This page will be shown when the user was successfully joined the session.
+
+
+![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(120).png)
+Additional Features: Users can reset their password with the old password.
+
+# Demonstration
 
