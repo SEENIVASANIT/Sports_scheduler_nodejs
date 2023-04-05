@@ -40,7 +40,7 @@ In this page, we are able to see the all sessions for the particular sports that
 
 ![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(110).png)
 
-In this page, It contains all details belongs to its correspoding session. And it shows the organizer of this session at the top right corner. Organizer and admin can able to edit and delete the sessions. Organizers are able to add players unless the player limit was full.
+In this page, It contains all details belongs to its corresponding session. And it shows the organizer of this session at the top right corner. Organizer and admin can able to edit and delete the sessions. Organizers are able to add players unless the player limit was full.
 
 ![alt text](https://raw.githubusercontent.com/SEENIVASANIT/Sports_scheduler_nodejs/main/Screenshots/Screenshot%20(115).png)
 
