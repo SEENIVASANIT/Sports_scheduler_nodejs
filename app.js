@@ -9,6 +9,7 @@ var cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const path = require("path");
+const { Model, Op } = require("sequelize");
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
@@ -433,6 +434,14 @@ app.get("/signup", (request, response) => {
   });
 });
 app.post("/users", async (request, response) => {
+  const alerady_use_mail = await User.findOne({
+    where: {
+      email: {
+        [Op.eq]: request.body.email,
+      },
+    },
+  });
+
   if (request.body.email.length == 0) {
     request.flash("error", "Email can not be empty!");
     return response.redirect("/signup");
@@ -446,24 +455,29 @@ app.post("/users", async (request, response) => {
     request.flash("error", "Password length should be minimun 8");
     return response.redirect("/signup");
   }
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log(hashedPwd);
+  if (alerady_use_mail) {
+    request.flash("error", "This email is already exists!");
+    return response.redirect("/signup");
+  } else {
+    const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+    console.log(hashedPwd);
 
-  try {
-    const user = await User.create({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
-      password: hashedPwd,
-    });
-    request.login(user, (err) => {
-      if (err) {
-        console.log(err);
-      }
-      response.redirect("/login");
-    });
-  } catch (error) {
-    console.log(error);
+    try {
+      const user = await User.create({
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        email: request.body.email,
+        password: hashedPwd,
+      });
+      request.login(user, (err) => {
+        if (err) {
+          console.log(err);
+        }
+        response.redirect("/login");
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 });
 
