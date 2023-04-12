@@ -451,6 +451,10 @@ app.post("/users", async (request, response) => {
     request.flash("error", "First name can not be empty!");
     return response.redirect("/signup");
   }
+  if (request.body.lastName.length == 0) {
+    request.flash("error", "Last name can not be empty!");
+    return response.redirect("/signup");
+  }
   if (request.body.password.length < 8) {
     request.flash("error", "Password length should be minimun 8");
     return response.redirect("/signup");
@@ -604,7 +608,7 @@ app.post("/reset", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
         user.resetPassword(hashedNewPwd);
       });
       req.flash("success", "Password changed successfully");
-      return res.redirect("/all_sports");
+      return res.redirect("/resetpassword");
     } catch (error) {
       console.log(error);
       return res.status(422).json(error);
