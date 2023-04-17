@@ -430,9 +430,7 @@ app.post("/add_players", async (request, response) => {
         request.body.total_count_player
       );
     }
-
-    //window.location.replace(`/session_des/:${request.body.session_id}`);
-    //response.replace(`/session_des/:${request.body.session_id}`)
+    
     response.redirect(`/session_des/:${request.body.session_id}`);
   } catch (err) {
     console.log(err);
