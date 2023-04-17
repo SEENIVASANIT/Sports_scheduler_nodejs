@@ -103,103 +103,129 @@ app.get("/", async (request, response) => {
   }
 });
 app.get("/admin_login", async (request, response) => {
+  if (localStorage.getItem("userId")) {
+    localStorage.removeItem("userId");
+  }
+  if (localStorage.getItem("admin_name")) {
+    localStorage.removeItem("admin_name");
+  }
   response.render("admin_login_page", {
     title: "welcom admin",
     csrfToken: request.csrfToken(),
   });
 });
 app.get("/all_session/:id/:sports_name", async (request, response) => {
-  //if((localStorage.getItem("admin_name"))||(localStorage.getItem("userId")))
-  const splits_colan = request.params.sports_name.slice(1);
-  const splits_colan_id = request.params.id.slice(1);
-  localStorage.setItem("current_sports_name", splits_colan),
-    localStorage.setItem("current_sports_id", splits_colan_id);
-  const all_sessions = await Create_session.get_today_late_session(
-    splits_colan
-  );
-  const post_session = await Create_session.get_post_session(splits_colan);
-  const url = `/all_session/:${request.params.id.slice(
-    1
-  )}/:${request.params.sports_name.slice(1)}/report`;
-  if (request.accepts("html")) {
-    response.render("all_sports_session", {
-      title: localStorage.getItem("current_sports_name"),
-      check_admin_are_not: localStorage.getItem("admin_name")
-        ? localStorage.getItem("admin_name")
-        : 0,
-      all_sessions,
-      post_session,
-      url,
-      csrfToken: request.csrfToken(),
-    });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
   } else {
-    response.json({ all_sessions });
+    //if((localStorage.getItem("admin_name"))||(localStorage.getItem("userId")))
+    const splits_colan = request.params.sports_name.slice(1);
+    const splits_colan_id = request.params.id.slice(1);
+    localStorage.setItem("current_sports_name", splits_colan),
+      localStorage.setItem("current_sports_id", splits_colan_id);
+    const all_sessions = await Create_session.get_today_late_session(
+      splits_colan
+    );
+    const post_session = await Create_session.get_post_session(splits_colan);
+    const url = `/all_session/:${request.params.id.slice(
+      1
+    )}/:${request.params.sports_name.slice(1)}/report`;
+    if (request.accepts("html")) {
+      response.render("all_sports_session", {
+        title: localStorage.getItem("current_sports_name"),
+        check_admin_are_not: localStorage.getItem("admin_name")
+          ? localStorage.getItem("admin_name")
+          : 0,
+        all_sessions,
+        post_session,
+        url,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({ all_sessions });
+    }
   }
 });
 app.get("/all_session/:id/:sports_name/report", async (request, response) => {
-  const splits_colan = request.params.sports_name.slice(1);
-  const splits_colan_id = request.params.id.slice(1);
-  localStorage.setItem("current_sports_name", splits_colan),
-    localStorage.setItem("current_sports_id", splits_colan_id);
-  const today = await Create_session.get_today(splits_colan);
-  const late = await Create_session.get_dulate(splits_colan);
-  const post = await Create_session.get_post_session(splits_colan);
-  if (request.accepts("html")) {
-    response.render("reports", {
-      title: localStorage.getItem("current_sports_name"),
-      today,
-      late,
-      post,
-      csrfToken: request.csrfToken(),
-    });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
   } else {
-    response.json({ all_sessions });
+    const splits_colan = request.params.sports_name.slice(1);
+    const splits_colan_id = request.params.id.slice(1);
+    localStorage.setItem("current_sports_name", splits_colan),
+      localStorage.setItem("current_sports_id", splits_colan_id);
+    const today = await Create_session.get_today(splits_colan);
+    const late = await Create_session.get_dulate(splits_colan);
+    const post = await Create_session.get_post_session(splits_colan);
+    if (request.accepts("html")) {
+      response.render("reports", {
+        title: localStorage.getItem("current_sports_name"),
+        today,
+        late,
+        post,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({ all_sessions });
+    }
   }
 });
 app.get("/session_des/:id", async (request, response) => {
-  const session_id = request.params.id.slice(1);
-  const sports_name = localStorage.getItem("current_sports_name");
-  const one_session = await Create_session.get_one_session(
-    sports_name,
-    session_id
-  );
-  const get_players = await Players_names.get_player_name_for_session(
-    sports_name,
-    session_id
-  );
-  if (request.accepts("html")) {
-    response.render("show_all_session_details", {
-      title: localStorage.getItem("current_sports_name"),
-      one_session,
-      single_userid: localStorage.getItem("userId")
-        ? localStorage.getItem("userId")
-        : 0,
-      admin: localStorage.getItem("admin_name")
-        ? localStorage.getItem("admin_name")
-        : 0,
-      sports_id: localStorage.getItem("current_sports_id"),
-      sports_name: localStorage.getItem("current_sports_name"),
-      session_id: request.params.id.slice(1),
-      get_players,
-      csrfToken: request.csrfToken(),
-    });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
   } else {
-    response.json({ one_session, single_userid, admin });
+    const session_id = request.params.id.slice(1);
+    const sports_name = localStorage.getItem("current_sports_name");
+    const one_session = await Create_session.get_one_session(
+      sports_name,
+      session_id
+    );
+    const get_players = await Players_names.get_player_name_for_session(
+      sports_name,
+      session_id
+    );
+    if (request.accepts("html")) {
+      response.render("show_all_session_details", {
+        title: localStorage.getItem("current_sports_name"),
+        one_session,
+        single_userid: localStorage.getItem("userId")
+          ? localStorage.getItem("userId")
+          : 0,
+        admin: localStorage.getItem("admin_name")
+          ? localStorage.getItem("admin_name")
+          : 0,
+        sports_id: localStorage.getItem("current_sports_id"),
+        sports_name: localStorage.getItem("current_sports_name"),
+        session_id: request.params.id.slice(1),
+        get_players,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.json({ one_session, single_userid, admin });
+    }
   }
 });
 app.get("/all_session", async (request, response) => {
-  response.render("all_sports_session", {
-    title: localStorage.getItem("current_sports_name"),
-    csrfToken: request.csrfToken(),
-  });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
+  } else {
+    response.render("all_sports_session", {
+      title: localStorage.getItem("current_sports_name"),
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 app.get("/add_sports", async (request, response) => {
-  response.render("add_new_Sports", {
-    Title: "create sports",
-    update_sports_name: false,
-    update_sports_id: null,
-    csrfToken: request.csrfToken(),
-  });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
+  } else {
+    response.render("add_new_Sports", {
+      Title: "create sports",
+      update_sports_name: false,
+      update_sports_id: null,
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 app.put("/add_sports/:id", async (req, response) => {
   console.log(response);
@@ -210,24 +236,28 @@ app.put("/add_sports/:id", async (req, response) => {
   });
 });
 app.get("/all_sports", async (request, response) => {
-  const all_sports = await Create_sports.getSports();
-  const check_admin = localStorage.getItem("admin_name")
-    ? localStorage.getItem("admin_name")
-    : 0;
-  if (request.accepts("html")) {
-    response.render("admin_create_sports", {
-      title: localStorage.getItem("admin_name")
-        ? localStorage.getItem("admin_name")
-        : request.user.firstName + request.user.lastName,
-      all_sports,
-      check_admin_are_not: localStorage.getItem("admin_name")
-        ? localStorage.getItem("admin_name")
-        : 0,
-      check_admin,
-      csrfToken: request.csrfToken(),
-    });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
   } else {
-    response.join({ all_sports, check_admin });
+    const all_sports = await Create_sports.getSports();
+    const check_admin = localStorage.getItem("admin_name")
+      ? localStorage.getItem("admin_name")
+      : 0;
+    if (request.accepts("html")) {
+      response.render("admin_create_sports", {
+        title: localStorage.getItem("admin_name")
+          ? localStorage.getItem("admin_name")
+          : request.user.firstName + request.user.lastName,
+        all_sports,
+        check_admin_are_not: localStorage.getItem("admin_name")
+          ? localStorage.getItem("admin_name")
+          : 0,
+        check_admin,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.join({ all_sports, check_admin });
+    }
   }
 });
 app.post("/admin_add_sports", async (request, response) => {
@@ -287,11 +317,15 @@ app.post("/admins", async (request, response) => {
   }
 });
 app.get("/input_session", async (request, response) => {
-  response.render("Create_session", {
-    title: localStorage.getItem("current_sports_name"),
-    sports_id: localStorage.getItem("current_sports_id"),
-    csrfToken: request.csrfToken(),
-  });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
+  } else {
+    response.render("Create_session", {
+      title: localStorage.getItem("current_sports_name"),
+      sports_id: localStorage.getItem("current_sports_id"),
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 app.post("/create_session", async (request, response) => {
   if (request.body.match_desc.length === 0) {
@@ -428,6 +462,12 @@ app.post("/join_players", async (request, response) => {
 });
 
 app.get("/signup", (request, response) => {
+  if (localStorage.getItem("userId")) {
+    localStorage.removeItem("userId");
+  }
+  if (localStorage.getItem("admin_name")) {
+    localStorage.removeItem("admin_name");
+  }
   response.render("signup", {
     title: "Signup",
     csrfToken: request.csrfToken(),
@@ -560,40 +600,55 @@ app.delete(
   }
 );
 app.get("/update_sports/:id/:name", async (request, response) => {
-  if (request.accepts("html")) {
-    response.render("update_sports_name", {
-      title: localStorage.getItem("current_sports_name"),
-      sports_name: request.params.name.slice(1),
-      id: request.params.id,
-      csrfToken: request.csrfToken(),
-    });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
   } else {
-    response.join("/");
+    if (request.accepts("html")) {
+      response.render("update_sports_name", {
+        title: localStorage.getItem("current_sports_name"),
+        sports_name: request.params.name.slice(1),
+        id: request.params.id,
+        csrfToken: request.csrfToken(),
+      });
+    } else {
+      response.join("/");
+    }
   }
 });
 app.get(
   "/update_session/:id/:sdes/:sdate/:time/:totalplayer/:existing_player",
   async (request, response) => {
-    response.render("update_session", {
-      title: localStorage.getItem("current_sports_name"),
-      id: request.params.id.slice(1),
-      session_des: request.params.sdes.slice(1),
-      session_date: request.params.sdate.slice(1),
-      session_time: request.params.time.slice(1),
-      session_players: request.params.totalplayer.slice(1),
-      existing_player: request.params.existing_player.slice(1),
-      csrfToken: request.csrfToken(),
-    });
+    if (
+      !localStorage.getItem("userId") &&
+      !localStorage.getItem("admin_name")
+    ) {
+      response.redirect("/");
+    } else {
+      response.render("update_session", {
+        title: localStorage.getItem("current_sports_name"),
+        id: request.params.id.slice(1),
+        session_des: request.params.sdes.slice(1),
+        session_date: request.params.sdate.slice(1),
+        session_time: request.params.time.slice(1),
+        session_players: request.params.totalplayer.slice(1),
+        existing_player: request.params.existing_player.slice(1),
+        csrfToken: request.csrfToken(),
+      });
+    }
   }
 );
 app.get("/resetpassword", async (request, response) => {
-  response.render("user_resetPassword", {
-    title: "Reset password",
-    check_admin_are_not: localStorage.getItem("admin_name")
-      ? localStorage.getItem("admin_name")
-      : 0,
-    csrfToken: request.csrfToken(),
-  });
+  if (!localStorage.getItem("userId") && !localStorage.getItem("admin_name")) {
+    response.redirect("/");
+  } else {
+    response.render("user_resetPassword", {
+      title: "Reset password",
+      check_admin_are_not: localStorage.getItem("admin_name")
+        ? localStorage.getItem("admin_name")
+        : 0,
+      csrfToken: request.csrfToken(),
+    });
+  }
 });
 app.post("/reset", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   if (req.body.newPassword.length < 8) {
