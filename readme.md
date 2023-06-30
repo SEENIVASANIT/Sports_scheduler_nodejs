@@ -1,9 +1,4 @@
 
-# Project Title
-
-A brief description of what this project does and who it's for
-
-
 # Sports Scheduler
 
 [Click here to visit Sports Scheduler Website](https://sports-scheduler-nodejs.onrender.com/)
